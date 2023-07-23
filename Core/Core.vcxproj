@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="include\GLAD\glad.c" />
     <ClCompile Include="src\core.cpp" />
+    <ClCompile Include="src\error.cpp" />
     <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="src\core.h" />
+    <ClInclude Include="src\error.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\triangle.h" />
   </ItemGroup>
