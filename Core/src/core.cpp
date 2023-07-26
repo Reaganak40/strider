@@ -1,7 +1,8 @@
 #include "core.h"
 #include "shader.h"
 #include "error.h"
-
+#include "utils.h"
+#include "renderer.h"
 
 int main(void)
 {
@@ -23,6 +24,8 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1);
+
     // Load all OpenGL functions using the glfw loader function
     // If you use SDL you can use: https://wiki.libsdl.org/SDL_GL_GetProcAddress
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -33,57 +36,68 @@ int main(void)
     // glad populates global constants after loading to indicate,
     // if a certain extension/version is available.
     printf("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
-
-    float positions[8] = {
-        -0.5f, -0.5f, // 0
-         0.5f, -0.5f, // 1
-         0.5f,  0.5f, // 2
-        -0.5f,  0.5f, // 3
-    };
-
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    unsigned int bufferID;
-    glGenBuffers(1, &bufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-    
-
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    std::string vertexShader = LoadShader("resources/shaders/vertex.glsl");
-    std::string fragmentShader = LoadShader("resources/shaders/fragment.glsl");
-    
-    unsigned int shader = CreateShader(vertexShader, fragmentShader);
-    glUseProgram(shader);
-
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        CoreRenderUnit crUnit;
 
-        glCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        VertexBuffer2f positions[4] = {
+            {-0.5f, -0.5f}, // 0
+            { 0.5f, -0.5f}, // 1
+            { 0.5f,  0.5f}, // 2
+            {-0.5f,  0.5f}, // 3
+        };
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        IndexBuffer indices[6] = {
+            0, 1, 2,
+            2, 3, 0
+        };
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        unsigned int vao;
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+
+        crUnit.vbo = RegisterVertexBuffer(positions, sizeof(positions));
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+        
+        crUnit.ibo = RegisterIndexBuffer(indices, sizeof(indices));
+        crUnit.iboCount = sizeof(indices) / sizeof(IndexBufferCount);
+
+        crUnit.shader = CreateShader(ReadFile("resources/shaders/vertex.glsl"), ReadFile("resources/shaders/fragment.glsl"));
+        BindShader(crUnit.shader);
+
+        int location = glGetUniformLocation(crUnit.shader, "uColor");
+        glCall(glUniform4f(location, 0.9f, 0.0f, 0.4f, 1.0f));
+
+        float rValue = 0.9f;
+        float increment = 0.01f;
+
+        Renderer renderer;
+        renderer.SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
+        
+        /* Loop until the user closes the window */
+        while (!glfwWindowShouldClose(window))
+        {
+            /* Render here */
+            renderer.Clear();
+
+            renderer.Draw(crUnit);
+
+            glUniform4f(location, rValue, 0.0f, 0.4f, 1.0f);
+
+            rValue += increment;
+            if (rValue >= 1.0f || rValue <= 0) {
+                increment = -increment;
+            }
+
+            /* Swap front and back buffers */
+            glfwSwapBuffers(window);
+
+            /* Poll for and process events */
+            glfwPollEvents();
+        }
+
+        glDeleteProgram(crUnit.shader);
     }
-
-    glDeleteProgram(shader);
     glfwTerminate();
     return 0;
 }

@@ -32,13 +32,16 @@ std::string glErrorContext(unsigned int error) {
 
 	switch (error) {
 
-	case 0x0500:
+	case 0x500:
 		return "GL_INVALID_ENUM";
+	case 0x501:
+		return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION:
+		return "GL_INVALID_OPERATION";
 	default:
 		std::stringstream ss;
 		ss << "0x" << std::hex << error;
 		return ss.str();
 	}
-
 	return "FAIL";
 }

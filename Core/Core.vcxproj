@@ -150,7 +150,11 @@
     <ClCompile Include="include\GLAD\glad.c" />
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\error.cpp" />
+    <ClCompile Include="src\indexBuffer.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\utils.cpp" />
+    <ClCompile Include="src\vertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GLAD\glad.h" />
@@ -159,8 +163,11 @@
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="src\core.h" />
     <ClInclude Include="src\error.h" />
+    <ClInclude Include="src\indexBuffer.h" />
+    <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
-    <ClInclude Include="src\triangle.h" />
+    <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\vertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="include\GLFW\lib-vc2022\glfw3.lib" />

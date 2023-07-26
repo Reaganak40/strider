@@ -1,9 +1,10 @@
 #include <fstream>
 #include <string>
 
-#include "core.h"
+#include "error.h"
+#include "shader.h"
 
-int CompileShader(unsigned int type, const std::string& source) {
+unsigned int CompileShader(unsigned int type, const std::string& source) {
     unsigned int id = glCreateShader(type);
     const char* src = source.c_str();
     glShaderSource(id, 1, &src, nullptr);
@@ -30,38 +31,18 @@ int CompileShader(unsigned int type, const std::string& source) {
     return id;
 }
 
-unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-    unsigned int program = glCreateProgram();
+ShaderID CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
+    ShaderID program = glCreateProgram();
     unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-    glAttachShader(program, vs);
+    glCall(glAttachShader(program, vs));
     glAttachShader(program, fs);
     glLinkProgram(program);
     glValidateProgram(program);
 
     glDeleteShader(vs);
-    glDeleteShader(fs);
+    glCall(glDeleteShader(fs));
 
     return program;
-}
-
-const std::string LoadShader(const std::string& filepath) {
-    std::ifstream sFilestream(filepath);
-
-    std::string sFileBuffer;
-    if (sFilestream.is_open()) { // always check whether the file is open
-
-        while (sFilestream) {
-            std::string line;
-            std::getline(sFilestream, line);
-            sFileBuffer += line + '\n';
-        }
-    }
-    else {
-        std::cout << "Error: Could not open '" << filepath << "'\n";
-    }
-
-    sFilestream.close();
-    return sFileBuffer;
 }

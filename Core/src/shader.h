@@ -1,8 +1,11 @@
 #pragma once
 #include <iostream>
+#include "core.h"
 
-int CompileShader(unsigned int type, const std::string& source);
+typedef unsigned int ShaderID;
 
-unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+unsigned int CompileShader(unsigned int type, const std::string& source);
 
-const std::string LoadShader(const std::string& filepath);
+ShaderID CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+
+inline void BindShader(ShaderID program) { glUseProgram(program); }
