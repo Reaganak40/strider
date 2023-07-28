@@ -6,6 +6,10 @@
 #include "renderer.h"
 #include "vertexArray.h"
 
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 int main(void)
 {
     GLFWwindow* window;
@@ -16,7 +20,7 @@ int main(void)
     }
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -45,10 +49,10 @@ int main(void)
         Texture texture;
 
         Vertex_PTC positions[4] = {
-            { -0.5f, -0.5f, 0.0f, 0.0f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f }, // 0
-            {  0.5f, -0.5f, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f }, // 1
-            {  0.5f,  0.5f, 0.0f, 1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f }, // 2
-            { -0.5f,  0.5f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f }, // 3
+            { { 100.0f, 100.0f, 0.0f}, {0.0f,  0.0f}, {0.0f, 0.0f, 0.0f, 1.0f} }, // 0
+            { { 300.0f, 100.0f, 0.0f}, {1.0f,  0.0f}, {0.0f, 0.0f, 0.0f, 1.0f} }, // 1
+            { { 300.0f, 300.0f, 0.0f}, {1.0f,  1.0f}, {0.0f, 0.0f, 0.0f, 1.0f} }, // 2
+            { { 100.0f, 300.0f, 0.0f}, {0.0f,  1.0f}, {0.0f, 0.0f, 0.0f, 1.0f} }, // 3
         };
 
         IndexBuffer indices[6] = {
@@ -59,18 +63,32 @@ int main(void)
         IndexBufferID ibo = RegisterIndexBuffer(indices, sizeof(indices));
         IndexBufferCount iboCount = sizeof(indices) / sizeof(IndexBufferCount);
         
+        glm::mat4 proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
+
+        glm::mat4 mvp = proj * view * model;
 
         ShaderID shader = CreateShader(ReadFile("resources/shaders/vertex.glsl"), ReadFile("resources/shaders/fragment.glsl"));
         BindShader(shader);
 
+        vao.Bind();
+        vao.PushCRU_Data(positions, sizeof(Vertex_PTC), 4, ibo, iboCount, shader);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         texture = LoadTexture("resources/textures/dragon.png");
         BindTexture(texture.id, 0);
+        
         UniformVariable uTexture = GetUniformVariable(shader, "uTexture");
         SetUniform1i(uTexture, 0);
 
-        
-        vao.Bind();
-        vao.PushCRU_Data(positions, sizeof(Vertex_PTC), 4, ibo, iboCount, shader);
+        UniformVariable uMVP = GetUniformVariable(shader, "uMVP");
+        SetUniformMat4f(uMVP, mvp);
+
+        UniformVariable uColor = GetUniformVariable(shader, "uColor");
+        SetUniform4f(uColor, 1.0f, 1.0f, 0.0f, 1.0f);
 
         Renderer::SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -92,6 +110,8 @@ int main(void)
         glDeleteBuffers(1, &ibo);
         glDeleteProgram(shader);
     }
+
+    glClearError();
     glfwTerminate();
     return 0;
 }

@@ -64,3 +64,8 @@ void SetUniform4f(UniformVariable uv, float v0, float v1, float v2, float v3) {
 void SetUniform1i(UniformVariable uv, int v0) {
     glCall(glUniform1i(uv, v0));
 }
+
+void SetUniformMat4f(UniformVariable uv, glm::mat4 matrix)
+{
+    glCall(glUniformMatrix4fv(uv, 1, GL_FALSE, &matrix[0][0]));
+}
