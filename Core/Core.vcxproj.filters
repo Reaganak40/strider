@@ -39,6 +39,15 @@
     <ClCompile Include="src\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\stb\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GLFW\glfw3.h">
@@ -74,6 +83,15 @@
     <ClInclude Include="src\renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\stb\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="include\GLFW\lib-vc2022\glfw3.lib" />
@@ -85,5 +103,13 @@
     <None Include="src\shader\vertex.glsl" />
     <None Include="resources\shaders\fragment.glsl" />
     <None Include="resources\shaders\vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\sample.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\textures\dragon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

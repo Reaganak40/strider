@@ -148,12 +148,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\GLAD\glad.c" />
+    <ClCompile Include="include\stb\stb_image.cpp" />
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\error.cpp" />
     <ClCompile Include="src\indexBuffer.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\utils.cpp" />
+    <ClCompile Include="src\vertexArray.cpp" />
     <ClCompile Include="src\vertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,12 +164,15 @@
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
+    <ClInclude Include="include\stb\stb_image.h" />
     <ClInclude Include="src\core.h" />
     <ClInclude Include="src\error.h" />
     <ClInclude Include="src\indexBuffer.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\vertexArray.h" />
     <ClInclude Include="src\vertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +185,10 @@
     <None Include="resources\shaders\vertex.glsl" />
     <None Include="src\shader\fragment.glsl" />
     <None Include="src\shader\vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\dragon.png" />
+    <Image Include="resources\textures\sample.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

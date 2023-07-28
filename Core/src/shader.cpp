@@ -46,3 +46,21 @@ ShaderID CreateShader(const std::string& vertexShader, const std::string& fragme
 
     return program;
 }
+
+UniformVariable GetUniformVariable(ShaderID id, const std::string& name) {
+    UniformVariable location;
+    glCall(location = glGetUniformLocation(id, name.c_str()));
+    if (location < 0) {
+        std::cout << "Warning: UniformVariable [" << name << "] does not exist.\n";
+    }
+
+    return location;
+}
+
+void SetUniform4f(UniformVariable uv, float v0, float v1, float v2, float v3) {
+    glCall(glUniform4f(uv, v0, v1, v2, v3));
+}
+
+void SetUniform1i(UniformVariable uv, int v0) {
+    glCall(glUniform1i(uv, v0));
+}
