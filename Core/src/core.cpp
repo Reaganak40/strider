@@ -74,7 +74,6 @@ int main(void)
             Renderer::Clear();
 
             sampler.OnUpdate(0.0f);
-            sampler.OnRender();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();

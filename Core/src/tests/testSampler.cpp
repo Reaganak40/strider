@@ -1,5 +1,6 @@
 #include "testSampler.h"
 #include "testClearColor.h"
+#include "testQuad.h"
 
 #include "error.h"
 
@@ -8,12 +9,13 @@
 
 namespace test {
 
-	TestSampler::TestSampler(GLFWwindow* window)
-		: currentTest(nullptr), selectedTest(0)
+	TestSampler::TestSampler(GLFWwindow* windowContext)
+		: Test(windowContext), currentTest(nullptr), selectedTest(0)
 	{
 		samplerWindowWidth = 250.0f;
 		samplerWindowHeight = 400.0f;
 
+		window = windowContext;
 		glfwGetWindowSize(window, &samplerWindowX, &samplerWindowY);
 		samplerWindowX -= (samplerWindowWidth + 10.0f);
 		samplerWindowY =  10;
@@ -38,6 +40,10 @@ namespace test {
 			delete currentTest;
 			selectedTest = -selectedTest;
 			StartNewTest();
+		}
+		
+		if (currentTest) {
+			currentTest->OnUpdate(deltaTime);
 		}
 	}
 
@@ -74,7 +80,7 @@ namespace test {
 			text_label = "Test Clear Color";
 			break;
 		case BUTTON_ID_TEST_QUAD:
-			text_label = "Test Simple Quad";
+			text_label = "Test Basic Quad ";
 			break;
 		default:
 			text_label = "BAD IDENTIFIER!";
@@ -117,9 +123,7 @@ namespace test {
 			currentTest = new TestClearColor();
 			break;
 		case BUTTON_ID_TEST_QUAD:
-			std::cout << "Warning: No Simple Quad Test!\n";
-			currentTest = nullptr;
-			selectedTest = 0;
+			currentTest = new TestBasicQuad(window);
 			break;
 		default:
 			std::cout << "Warning: Unidentified selected test!\n";

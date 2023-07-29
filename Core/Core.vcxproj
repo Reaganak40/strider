@@ -172,6 +172,7 @@
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\tests\testClearColor.cpp" />
     <ClCompile Include="src\tests\test.cpp" />
+    <ClCompile Include="src\tests\testQuad.cpp" />
     <ClCompile Include="src\tests\testSampler.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\utils.cpp" />
@@ -482,6 +483,7 @@
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\tests\test.h" />
     <ClInclude Include="src\tests\testClearColor.h" />
+    <ClInclude Include="src\tests\testQuad.h" />
     <ClInclude Include="src\tests\testSampler.h" />
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\utils.h" />

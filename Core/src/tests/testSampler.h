@@ -7,6 +7,8 @@ namespace test {
 
 	class TestSampler : public Test {
 	private:
+		GLFWwindow* window;
+
 		Test* currentTest;
 		float samplerWindowWidth;
 		float samplerWindowHeight;
@@ -14,7 +16,7 @@ namespace test {
 		int samplerWindowY;
 		int selectedTest;
 	public:
-		TestSampler(GLFWwindow* window);
+		TestSampler(GLFWwindow* windowContext);
 		~TestSampler();
 
 		void OnUpdate(float deltaTime) override;

@@ -16,7 +16,6 @@ namespace test {
 	TestClearColor::~TestClearColor()
 	{
 		glCall(glClearColor(oldColor[0], oldColor[1], oldColor[2], oldColor[3]));
-		std::cout << "Destructor called\n";
 	}
 
 	void TestClearColor::OnUpdate(float deltaTime)
