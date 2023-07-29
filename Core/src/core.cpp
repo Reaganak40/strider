@@ -63,11 +63,7 @@ int main(void)
         IndexBufferID ibo = RegisterIndexBuffer(indices, sizeof(indices));
         IndexBufferCount iboCount = sizeof(indices) / sizeof(IndexBufferCount);
         
-        glm::mat4 proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-
-        glm::mat4 mvp = proj * view * model;
+        
 
         ShaderID shader = CreateShader(ReadFile("resources/shaders/vertex.glsl"), ReadFile("resources/shaders/fragment.glsl"));
         BindShader(shader);
@@ -85,12 +81,22 @@ int main(void)
         SetUniform1i(uTexture, 0);
 
         UniformVariable uMVP = GetUniformVariable(shader, "uMVP");
-        SetUniformMat4f(uMVP, mvp);
 
         UniformVariable uColor = GetUniformVariable(shader, "uColor");
         SetUniform4f(uColor, 1.0f, 1.0f, 0.0f, 1.0f);
 
         Renderer::SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        ImGui::StyleColorsDark();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init("#version 330");
+
+        glm::mat4 proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+        glm::vec3 translation(200, 200, 0);
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -98,7 +104,24 @@ int main(void)
             /* Render here */
             Renderer::Clear();
 
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+            glm::mat4 mvp = proj * view * model;
+            SetUniformMat4f(uMVP, mvp);
+            
             vao.DrawAll();
+
+            ImGui::Begin("Debug");
+            ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 1280.0f);
+            ImGui::Text("App Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             /* Swap front and back buffers */
             glfwSwapBuffers(window);
@@ -106,6 +129,11 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
         }
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
 
         glDeleteBuffers(1, &ibo);
         glDeleteProgram(shader);
