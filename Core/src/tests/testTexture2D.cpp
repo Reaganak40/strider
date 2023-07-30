@@ -1,21 +1,20 @@
-#include "testQuad.h"
+#include "testTexture2D.h"
 #include "core.h"
 #include "error.h"
 
 #include "vertexArray.h"
 #include "shader.h"
-#include "texture.h"
 #include "utils.h"
 
 namespace test {
 
 
 
-	TestBasicQuad::TestBasicQuad(GLFWwindow* windowContext)
-		: Test(windowContext), quadColor{0.5f, 0.2f, 0.5f, 1.0f}
+	TestTexture2D::TestTexture2D(GLFWwindow* windowContext)
+		: Test(windowContext), quadColor{ 0.5f, 0.2f, 0.5f, 1.0f }
 	{
-		quadWidth = 200.0f;
-		quadHeight = 200.0f;
+		quadWidth = 450.0f;
+		quadHeight = 300.0f;
 
 		positions[0] = { {0.0f,		 0.0f,		 0.0f}, {0.0f,  0.0f}, {0.0f, 0.0f, 0.0f, 1.0f} };
 		positions[1] = { {quadWidth, 0.0f,		 0.0f}, {1.0f,  0.0f}, {0.0f, 0.0f, 0.0f, 1.0f} };
@@ -31,8 +30,8 @@ namespace test {
 
 		ibo = RegisterIndexBuffer(indices, sizeof(indices));
 		iboCount = sizeof(indices) / sizeof(IndexBufferCount);
-		
-		shader = CreateShader(ReadFile("resources/shaders/vertex.glsl"), ReadFile("resources/shaders/fragmentSolid.glsl"));
+
+		shader = CreateShader(ReadFile("resources/shaders/vertex.glsl"), ReadFile("resources/shaders/fragmentTex.glsl"));
 		BindShader(shader);
 
 		vao.Bind();
@@ -40,50 +39,55 @@ namespace test {
 
 		uMVP = GetUniformVariable(shader, "uMVP");
 
-		uColor = GetUniformVariable(shader, "uColor");
+		texture = LoadTexture("resources/textures/dragon.png");
+		BindTexture(texture.id, 0);
+		uTexture = GetUniformVariable(shader, "uTexture");
+		SetUniform1i(uTexture, 0);
 
 		glfwGetWindowSize(window, &maxX, &maxY);
 
 		proj = glm::ortho(0.0f, (float)maxX, 0.0f, (float)maxY, -1.0f, 1.0f);
 		view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-		translation = glm::vec3((maxX/2)-(quadWidth/2), 200, 0);
+		translation = glm::vec3((maxX / 2) - (quadWidth / 2), 200, 0);
 
 		maxX -= (int)quadWidth;
 		maxY -= (int)quadHeight;
+
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+		glm::mat4 mvp = proj * view * model;
+
+		SetUniformMat4f(uMVP, mvp);
 	}
 
-	TestBasicQuad::~TestBasicQuad()
+	TestTexture2D::~TestTexture2D()
 	{
 		glCall(glDeleteBuffers(1, &ibo));
+		glCall(glDeleteTextures(1, &texture.id));
 		glCall(glDeleteProgram(shader));
 	}
 
-	void TestBasicQuad::OnUpdate(float deltaTime)
+	void TestTexture2D::OnUpdate(float deltaTime)
 	{
-		SetUniform4f(uColor, quadColor[0], quadColor[1], quadColor[2], quadColor[3]);
-		
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
 		glm::mat4 mvp = proj * view * model;
 		SetUniformMat4f(uMVP, mvp);
 	}
 
-	void TestBasicQuad::OnRender()
+	void TestTexture2D::OnRender()
 	{
 		vao.Bind();
 		glCall(vao.DrawAll());
 	}
 
-	void TestBasicQuad::OnImGuiRender()
+	void TestTexture2D::OnImGuiRender()
 	{
 		ImGui::SetNextWindowSize(ImVec2(368, 250), ImGuiCond_Appearing);
 		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Appearing);
-		
-		ImGui::Begin("Test Basic Quad");
+
+		ImGui::Begin("Test Texure2D");
+
 		ImGui::SliderFloat("Translation X", &translation.x, 0.0f, (float)maxX);
 		ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, (float)maxY);
-
-		ImGui::NewLine();
-		ImGui::ColorEdit4("Quad Color", quadColor);
 
 		ShowWindowFooter();
 		ImGui::End();

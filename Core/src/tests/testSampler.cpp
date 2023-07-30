@@ -1,11 +1,13 @@
 #include "testSampler.h"
 #include "testClearColor.h"
 #include "testQuad.h"
+#include "testTexture2D.h"
 
 #include "error.h"
 
 #define BUTTON_ID_TEST_CLEAR_COLOR 1
 #define BUTTON_ID_TEST_QUAD 2
+#define BUTTON_ID_TEST_TEXTURE2D 3
 
 namespace test {
 
@@ -17,7 +19,7 @@ namespace test {
 
 		window = windowContext;
 		glfwGetWindowSize(window, &samplerWindowX, &samplerWindowY);
-		samplerWindowX -= (samplerWindowWidth + 10.0f);
+		samplerWindowX -= ((int)samplerWindowWidth + 10);
 		samplerWindowY =  10;
 	}
 
@@ -60,12 +62,13 @@ namespace test {
 		}
 
 		ImGui::SetNextWindowSize(ImVec2(samplerWindowWidth, samplerWindowHeight), ImGuiCond_Once);
-		ImGui::SetNextWindowPos(ImVec2(samplerWindowX, samplerWindowY), ImGuiCond_Once);
+		ImGui::SetNextWindowPos(ImVec2((float)samplerWindowX, (float)samplerWindowY), ImGuiCond_Once);
 			
 		ImGui::Begin("Test Sampler");
 			
 		AddTestOption(BUTTON_ID_TEST_CLEAR_COLOR);
 		AddTestOption(BUTTON_ID_TEST_QUAD);
+		AddTestOption(BUTTON_ID_TEST_TEXTURE2D);
 			
 		ImGui::End();
 	}
@@ -81,6 +84,9 @@ namespace test {
 			break;
 		case BUTTON_ID_TEST_QUAD:
 			text_label = "Test Basic Quad ";
+			break;
+		case BUTTON_ID_TEST_TEXTURE2D:
+			text_label = "Test Texture 2D ";
 			break;
 		default:
 			text_label = "BAD IDENTIFIER!";
@@ -124,6 +130,9 @@ namespace test {
 			break;
 		case BUTTON_ID_TEST_QUAD:
 			currentTest = new TestBasicQuad(window);
+			break;
+		case BUTTON_ID_TEST_TEXTURE2D:
+			currentTest = new TestTexture2D(window);
 			break;
 		default:
 			std::cout << "Warning: Unidentified selected test!\n";
