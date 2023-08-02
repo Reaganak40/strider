@@ -9,3 +9,6 @@
 
 #include <iostream>
 
+#define DYNAMIC_BUFFER_DEFAULT_LIMIT 1000
+typedef int EntityID;
+typedef const char* SceneID;

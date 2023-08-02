@@ -2,12 +2,13 @@
 
 #pragma once
 #include "test.h"
-#include "vertexArray.h"
-#include "texture.h"
+#include <renderer/vertexArray.h>
+#include <renderer/texture.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+using namespace core;
 namespace test {
 	class TestTexture2D : public Test {
 	private:

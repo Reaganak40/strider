@@ -2,11 +2,11 @@
 #include "core.h"
 #include "error.h"
 
-#include "vertexArray.h"
-#include "shader.h"
-#include "texture.h"
+#include <renderer/vertexArray.h>
+#include <renderer/shader.h>
 #include "utils.h"
 
+using namespace core;
 namespace test {
 
 
@@ -70,7 +70,7 @@ namespace test {
 	void TestBasicQuad::OnRender()
 	{
 		vao.Bind();
-		glCall(vao.DrawAll());
+		//glCall(vao.DrawAll());
 	}
 
 	void TestBasicQuad::OnImGuiRender()

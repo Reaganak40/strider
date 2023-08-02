@@ -1,10 +1,11 @@
 #pragma once
 #include "test.h"
-#include "vertexArray.h"
+#include <renderer/vertexArray.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+using namespace core;
 namespace test {
 	class TestBasicQuad : public Test {
 	private:

@@ -2,8 +2,8 @@
 #include "core.h"
 #include "error.h"
 
-#include "vertexArray.h"
-#include "shader.h"
+#include <renderer/vertexArray.h>
+#include <renderer/shader.h>
 #include "utils.h"
 
 namespace test {
@@ -76,7 +76,7 @@ namespace test {
 	void TestTexture2D::OnRender()
 	{
 		vao.Bind();
-		glCall(vao.DrawAll());
+		//glCall(vao.DrawAll());
 	}
 
 	void TestTexture2D::OnImGuiRender()

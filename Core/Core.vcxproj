@@ -77,6 +77,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -98,6 +99,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,6 +121,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +143,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)src</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -165,20 +169,23 @@
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\stb\stb_image.cpp" />
+    <ClCompile Include="src\app.cpp" />
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\error.cpp" />
-    <ClCompile Include="src\indexBuffer.cpp" />
-    <ClCompile Include="src\renderer.cpp" />
-    <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\quad.cpp" />
+    <ClCompile Include="src\renderer\indexBuffer.cpp" />
+    <ClCompile Include="src\renderer\renderer.cpp" />
+    <ClCompile Include="src\renderer\shader.cpp" />
+    <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\tests\testClearColor.cpp" />
     <ClCompile Include="src\tests\test.cpp" />
     <ClCompile Include="src\tests\testQuad.cpp" />
     <ClCompile Include="src\tests\testSampler.cpp" />
     <ClCompile Include="src\tests\testTexture2D.cpp" />
-    <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\renderer\texture.cpp" />
     <ClCompile Include="src\utils.cpp" />
-    <ClCompile Include="src\vertexArray.cpp" />
-    <ClCompile Include="src\vertexBuffer.cpp" />
+    <ClCompile Include="src\renderer\vertexArray.cpp" />
+    <ClCompile Include="src\renderer\vertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GLAD\glad.h" />
@@ -477,20 +484,25 @@
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="include\stb\stb_image.h" />
+    <ClInclude Include="src\app.h" />
     <ClInclude Include="src\core.h" />
     <ClInclude Include="src\error.h" />
-    <ClInclude Include="src\indexBuffer.h" />
-    <ClInclude Include="src\renderer.h" />
-    <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\mathTypes.h" />
+    <ClInclude Include="src\mesh.h" />
+    <ClInclude Include="src\quad.h" />
+    <ClInclude Include="src\renderer\indexBuffer.h" />
+    <ClInclude Include="src\renderer\renderer.h" />
+    <ClInclude Include="src\renderer\shader.h" />
+    <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\tests\test.h" />
     <ClInclude Include="src\tests\testClearColor.h" />
     <ClInclude Include="src\tests\testQuad.h" />
     <ClInclude Include="src\tests\testSampler.h" />
     <ClInclude Include="src\tests\testTexture2D.h" />
-    <ClInclude Include="src\texture.h" />
+    <ClInclude Include="src\renderer\texture.h" />
     <ClInclude Include="src\utils.h" />
-    <ClInclude Include="src\vertexArray.h" />
-    <ClInclude Include="src\vertexBuffer.h" />
+    <ClInclude Include="src\renderer\vertexArray.h" />
+    <ClInclude Include="src\renderer\vertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="include\GLFW\lib-vc2022\glfw3.lib" />
