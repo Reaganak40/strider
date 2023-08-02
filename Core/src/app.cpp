@@ -1,6 +1,10 @@
+#include "core.h"
+
 #include "app.h"
 #include "scene.h"
 #include "error.h"
+
+
 
 namespace core {
 
@@ -130,5 +134,12 @@ StriderEngine::~StriderEngine()
 int StriderEngine::CreateWindow(const char* nWindowName, int nWindowWidth, int nWindowHeight)
 {
 	app = new core::AppInstance(nWindowName, nWindowWidth, nWindowHeight);
+	timestep.deltaTime = 0.0f;
 	return 0;
+}
+
+void StriderEngine::Update()
+{
+	timestep.Update();
+	app->Update(timestep.deltaTime);
 }

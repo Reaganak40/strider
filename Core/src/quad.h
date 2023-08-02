@@ -4,25 +4,24 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "mathTypes.h"
+
 class Quad {
 private:
-	struct vec4_position {
-		float x, y, z;
-	};
+	EntityID m_ID;
 
-	struct vec3_size {
-		float width, height, depth;
-	};
-
-	vec4_position position;
-	vec3_size size;
 
 	core::Vertex* vertices;
 
 public:
-	EntityID eid;
-	Quad(EntityID id, float position[3], float size[3]);
+	strider::PositionVec3f position;
+	strider::SizeVec3f size;
+	strider::ColorVec4f color;
+
+	Quad(strider::PositionVec3f nPosition, strider::SizeVec3f nSize, strider::ColorVec4f nColor = {0.0f, 0.0f, 0.0f, 1.0f});
 	~Quad();
+
+	void Move(float dx = 0, float dy = 0, float dz = 0);
 
 	friend class Scene;
 };

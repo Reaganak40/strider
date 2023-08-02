@@ -4,6 +4,7 @@
 #include "indexBuffer.h"
 #include "shader.h"
 
+#include "error.h"
 #include <vector>
 
 #define VAO_MAX_RENDER_UNITS 64
@@ -50,14 +51,14 @@ namespace core {
 		void PushCRU_Data(void* vboData, size_t vertexSize, unsigned int vertexCount,
 			IndexBufferID ibo, IndexBufferCount iboCount, ShaderID shader);
 
-		void inline Bind() { glBindVertexArray(id); }
+		void inline Bind() { glCall(glBindVertexArray(id)); }
 		void inline Unbind() { glBindVertexArray(0); }
 
 		inline const std::vector<CoreRenderUnit>& GetCRUs() { return CRUs; }
 
 		VertexArrayID inline GetID() { return id; }
 
-	private:
 		void DefineVertexBufferLayout(size_t vertexType);
+	private:
 	};
 }

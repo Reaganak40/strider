@@ -1,7 +1,7 @@
 #include "scene.h"
 
 Scene::Scene(core::Renderer& globalRenderer)
-	: m_renderer(globalRenderer), m_VAO(&globalRenderer.m_shader_manager)
+	: m_renderer(globalRenderer), m_VAO(&globalRenderer.m_shader_manager), entityCounter(1)
 {
 	layers = {};
 }

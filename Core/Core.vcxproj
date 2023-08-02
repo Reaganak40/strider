@@ -500,6 +500,7 @@
     <ClInclude Include="src\tests\testSampler.h" />
     <ClInclude Include="src\tests\testTexture2D.h" />
     <ClInclude Include="src\renderer\texture.h" />
+    <ClInclude Include="src\timestep.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
     <ClInclude Include="src\renderer\vertexBuffer.h" />

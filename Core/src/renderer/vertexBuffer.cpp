@@ -1,4 +1,5 @@
 #include "vertexBuffer.h"
+#include "error.h"
 
 namespace core {
 	VertexBufferID RegisterVertexBuffer(void* vertices, size_t size, unsigned int glDrawHint) {
@@ -11,7 +12,7 @@ namespace core {
 	
 	
 	DynamicVertexBuffer::DynamicVertexBuffer(unsigned int nMaxVertices)
-		: m_maxBufferSize(nMaxVertices * sizeof(Vertex)), m_bufferSize(0), m_VBO(0), m_shouldUpdate(0)
+		: m_maxBufferSize(nMaxVertices), m_bufferSize(0), m_VBO(0)
 	{
 		m_buffer = std::make_unique<Vertex[]>(nMaxVertices);
 	}
@@ -27,7 +28,7 @@ namespace core {
 
 	int DynamicVertexBuffer::PushBack(EntityID key, Vertex* mesh, unsigned int vertexCount)
 	{
-		if ((m_bufferSize + sizeof(Vertex) * vertexCount) > m_maxBufferSize) {
+		if ((m_bufferSize + vertexCount) > m_maxBufferSize) {
 			printf("Warning: Exceeded Dynamic Buffer size\n");
 			return -1;
 		}
@@ -39,14 +40,8 @@ namespace core {
 		mesh_backref.push_back(key);
 
 
-		m_bufferSize += (sizeof(Vertex) * vertexCount);
-
-		if (meshes.size() == 1 || m_shouldUpdate == 2) {
-			m_shouldUpdate = 2;
-		}
-		else {
-			m_shouldUpdate = 1;
-		}
+		m_bufferSize += vertexCount;
+		
 		return 0;
 	}
 
@@ -85,8 +80,6 @@ namespace core {
 		}
 
 		m_bufferSize -= remove_size;
-		m_shouldUpdate = (!m_shouldUpdate ? 1 : m_shouldUpdate);
-
 		return current_index;
 	}
 
@@ -122,8 +115,6 @@ namespace core {
 		}
 
 
-		m_shouldUpdate = (!m_shouldUpdate ? 1 : m_shouldUpdate);
-
 		return 0;
 	}
 
@@ -134,22 +125,16 @@ namespace core {
 			return nullptr;
 		}
 
-		m_shouldUpdate = (!m_shouldUpdate ? 1 : m_shouldUpdate);
 		return meshes[meshMap[key]];
 	}
 	void DynamicVertexBuffer::BindVBO()
 	{
-		glBindBuffer(GL_VERTEX_ARRAY, m_VBO);
+		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_VBO));
 
 	}
-	int DynamicVertexBuffer::glUpdateBuffer()
-	{
-		int status = m_shouldUpdate;
-		if (m_shouldUpdate) {
-			glBufferSubData(GL_ARRAY_BUFFER, 0, m_bufferSize, m_buffer.get());
-			m_shouldUpdate = 0;
-		}
 
-		return status;
+	void DynamicVertexBuffer::glUpdateBuffer()
+	{
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m_bufferSize * sizeof(Vertex), m_buffer.get());
 	}
 }

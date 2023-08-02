@@ -74,8 +74,6 @@ namespace core {
 		std::unordered_map<EntityID, unsigned int> meshMap;
 		std::vector<EntityID> mesh_backref;
 
-		int m_shouldUpdate;
-
 	public:
 		DynamicVertexBuffer(unsigned int nMaxVertices=DYNAMIC_BUFFER_DEFAULT_LIMIT);
 		~DynamicVertexBuffer();
@@ -93,9 +91,8 @@ namespace core {
 
 		void BindVBO();
 
-		/*
-			Returns 0 if nothing changed, >0 if update completed, 2 if it was the first ever update.
-		*/
-		int glUpdateBuffer();
+		void glUpdateBuffer();
+
+		int inline MeshCount() { return meshes.size(); }
 	};
 }

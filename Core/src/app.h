@@ -2,7 +2,7 @@
 
 #include "core.h"
 #include <renderer/renderer.h>
-
+#include "timestep.h"
 #include <memory>
 
 class Scene;
@@ -37,14 +37,16 @@ namespace core {
 class StriderEngine {
 private:
 	core::AppInstance* app;
+
 public:
+	Timestep timestep;
 	StriderEngine();
 	~StriderEngine();
 
 	int CreateWindow(const char* windowName, int nWindowWidth, int nWindowHeight);
 
 	inline bool IsOpen() { return app->IsOpen(); }
-	inline void Update(float deltaTime) { app->Update(deltaTime); }
+	void Update();
 	inline void Render() { app->Render(); }
 
 	inline std::shared_ptr<Scene> NewScene(SceneID name) { return app->NewScene(name); }

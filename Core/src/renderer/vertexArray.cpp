@@ -55,9 +55,7 @@ namespace core {
 	{
 		
 		if (m_BatchBuffers.find(bbID) != m_BatchBuffers.end()) {
-			if (m_BatchBuffers[bbID]->batchVBO.glUpdateBuffer() == 2) {
-				DefineVertexBufferLayout(sizeof(Vertex));
-			}
+			m_BatchBuffers[bbID]->batchVBO.glUpdateBuffer();
 			CRUs[bbID].iboCount = m_BatchBuffers[bbID]->batchIBO.glUpdateBuffer();
 		}
 	}

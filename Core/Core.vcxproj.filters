@@ -1043,6 +1043,9 @@
     <ClInclude Include="src\mathTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\timestep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="include\GLFW\lib-vc2022\glfw3.lib" />
