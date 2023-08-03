@@ -64,6 +64,8 @@ namespace core {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		m_currentScene->Update(deltaTime);
 	}
 
 	void AppInstance::Render()

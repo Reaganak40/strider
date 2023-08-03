@@ -34,7 +34,7 @@ namespace core {
 		}
 
 		defaultShader->Bind();
-		defaultShader->SetUniform<strider::vec4f>("uColor", { 1.0f, 1.0f, 0.0f, 1.0f });
+		defaultShader->SetUniform<Strider::vec4f>("uColor", { 1.0f, 1.0f, 0.0f, 1.0f });
 		defaultShader->SetUniform<glm::mat4>("uMVP", mvp);
 	}
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "core.h"
-
+#include "entity.h"
 #include <vector>
 #include <unordered_map>
 

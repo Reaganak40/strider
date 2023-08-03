@@ -1,6 +1,6 @@
 #pragma once
 
-namespace strider {
+namespace Strider {
 	struct vec4f {
 		float v0, v1, v2, v3;
 
@@ -16,5 +16,9 @@ namespace strider {
 
 	struct ColorVec4f {
 		float red, green, blue, alpha;
+	};
+
+	struct TranslateVec3f {
+		float dx, dy, dz;
 	};
 }

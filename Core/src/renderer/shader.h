@@ -40,7 +40,7 @@ namespace core {
 		void SetUniform(const char* uniformName, DataType data) {}
 
 		template<>
-		void SetUniform<strider::vec4f>(const char* uniformName, strider::vec4f data) {
+		void SetUniform<Strider::vec4f>(const char* uniformName, Strider::vec4f data) {
 			
 			if (m_uniforms.find(uniformName) == m_uniforms.end()) {
 				m_uniforms[uniformName] = GetUniformVariable(m_ID, uniformName);

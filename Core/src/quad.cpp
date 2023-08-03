@@ -1,10 +1,9 @@
 #include "quad.h"
+#include "entityManagementSystem.h"
 
-Quad::Quad(strider::PositionVec3f nPosition, strider::SizeVec3f nSize, strider::ColorVec4f nColor)
-	: m_ID(0)
+Quad::Quad(Strider::PositionVec3f nPosition, Strider::SizeVec3f nSize, Strider::ColorVec4f nColor)
+	: EntityTemplate(MESH | TRANSFORM | DIMENSIONALITY), transform{0.0f, 0.0f, 0.0f}
 {
-	vertices = new core::Vertex[4];
-
 	position = nPosition;
 	size = nSize;
 	color = nColor;
@@ -39,10 +38,6 @@ Quad::Quad(strider::PositionVec3f nPosition, strider::SizeVec3f nSize, strider::
 
 Quad::~Quad()
 {
-	if (!m_ID) {
-		// this quad was never loaded to a scene.
-		delete[] vertices;
-	}
 }
 
 void Quad::Move(float dx, float dy, float dz)
@@ -55,4 +50,32 @@ void Quad::Move(float dx, float dy, float dz)
 	position.x += dx;
 	position.y += dy;
 	position.z += dz;
+}
+
+UpdateQuad::UpdateQuad()
+{
+}
+
+UpdateQuad::~UpdateQuad()
+{
+}
+
+void UpdateQuad::OnUpdate(float deltaTime)
+{
+	auto& dimensionalities = GetComponentPool<DimensionalComponent>();
+	auto& transforms = GetComponentPool<TransformComponent>();
+
+	for (unsigned int i = 0; i < m_EMS->Count(); i++) {
+		if ((dimensionalities[i].position.x + dimensionalities[i].size.width) >= 1280.0f) {
+			transforms[i].translate.dx = -(float)abs(transforms[i].translate.dx);
+		} else if ((dimensionalities[i].position.x) <= 0.0f) {
+			transforms[i].translate.dx = (float)abs(transforms[i].translate.dx);
+		}
+
+		if ((dimensionalities[i].position.y + dimensionalities[i].size.height) >= 720.0f) {
+			transforms[i].translate.dy = -(float)abs(transforms[i].translate.dy);
+		} else if ((dimensionalities[i].position.y) <= 0.0f) {
+			transforms[i].translate.dy = (float)abs(transforms[i].translate.dy);
+		}
+	}
 }

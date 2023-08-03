@@ -1,5 +1,6 @@
 #pragma once
 #include "core.h"
+#include "entity.h"
 #include <unordered_map>
 
 namespace core {
@@ -67,10 +68,10 @@ namespace core {
 		VertexBufferID m_VBO;
 
 		std::unique_ptr<Vertex[]> m_buffer;
-		unsigned int m_maxBufferSize;
-		unsigned int m_bufferSize;
+		unsigned int m_max_vertices;
+		unsigned int m_vertex_count;
 
-		std::vector<Vertex*> meshes;
+		std::vector<unsigned int> meshes;
 		std::unordered_map<EntityID, unsigned int> meshMap;
 		std::vector<EntityID> mesh_backref;
 
@@ -87,7 +88,11 @@ namespace core {
 		int Remove(EntityID key);
 		int InsertAt(unsigned int meshIndex, EntityID key, Vertex* mesh, unsigned int vertexCount);
 
-		Vertex* GetMeshBuffer(EntityID key);
+		Vertex* GetMeshBuffer(EntityID key, int meshIndexOffset = 0);
+
+		unsigned int GetMeshVectorOffset(EntityID key);
+
+		Vertex* GetVertexBuffer();
 
 		void BindVBO();
 

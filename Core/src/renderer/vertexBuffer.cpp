@@ -12,7 +12,7 @@ namespace core {
 	
 	
 	DynamicVertexBuffer::DynamicVertexBuffer(unsigned int nMaxVertices)
-		: m_maxBufferSize(nMaxVertices), m_bufferSize(0), m_VBO(0)
+		: m_max_vertices(nMaxVertices), m_vertex_count(0), m_VBO(0)
 	{
 		m_buffer = std::make_unique<Vertex[]>(nMaxVertices);
 	}
@@ -23,24 +23,24 @@ namespace core {
 
 	VertexBufferID DynamicVertexBuffer::RegisterWithVAO()
 	{
-		return m_VBO = RegisterVertexBuffer(nullptr, m_maxBufferSize, GL_DYNAMIC_DRAW);
+		return m_VBO = RegisterVertexBuffer(nullptr, sizeof(Vertex) * m_max_vertices, GL_DYNAMIC_DRAW);
 	}
 
 	int DynamicVertexBuffer::PushBack(EntityID key, Vertex* mesh, unsigned int vertexCount)
 	{
-		if ((m_bufferSize + vertexCount) > m_maxBufferSize) {
+		if ((m_vertex_count + vertexCount) > m_max_vertices) {
 			printf("Warning: Exceeded Dynamic Buffer size\n");
 			return -1;
 		}
 
-		memcpy(m_buffer.get() + m_bufferSize, mesh, sizeof(Vertex) * vertexCount);
+		memcpy(m_buffer.get() + m_vertex_count, mesh, sizeof(Vertex) * vertexCount);
 
-		meshes.push_back(m_buffer.get() + m_bufferSize);
+		meshes.push_back(m_vertex_count);
 		meshMap[key] = meshes.size() - 1;
 		mesh_backref.push_back(key);
 
 
-		m_bufferSize += vertexCount;
+		m_vertex_count += vertexCount;
 		
 		return 0;
 	}
@@ -66,10 +66,10 @@ namespace core {
 		size_t remove_size;
 		if ((meshMap[key] + 1) < meshes.size()) {
 			remove_size = meshes[meshMap[key] + 1] - meshes[meshMap[key]];
-			memcpy(meshes[meshMap[key]], meshes[meshMap[key] + 1], (m_buffer.get() + m_bufferSize) - (meshes[meshMap[key] + 1]));
+			memcpy(GetMeshBuffer(key), GetMeshBuffer(key, 1), (m_buffer.get() + m_vertex_count) - (GetMeshBuffer(key, 1)));
 		}
 		else {
-			remove_size = (m_buffer.get() + m_bufferSize) - meshes[meshMap[key]];
+			remove_size = (m_buffer.get() + m_vertex_count) - GetMeshBuffer(key);
 		}
 
 		// update meshes vector, left-shifting all to the right
@@ -79,7 +79,7 @@ namespace core {
 			*it -= remove_size;
 		}
 
-		m_bufferSize -= remove_size;
+		m_vertex_count -= remove_size;
 		return current_index;
 	}
 
@@ -87,13 +87,13 @@ namespace core {
 	{
 		size_t nMeshSize = sizeof(Vertex) * vertexCount;
 
-		if ((m_bufferSize + nMeshSize) > m_maxBufferSize) {
+		if ((m_vertex_count + nMeshSize) > m_max_vertices) {
 			printf("Warning: Exceeded Dynamic Buffer size\n");
 			return -1;
 		}
 
-		Vertex* insertAddr = meshes[meshIndex];
-		size_t rightSize = (size_t)((m_buffer.get() + m_bufferSize) - insertAddr);
+		Vertex* insertAddr = m_buffer.get() + meshes[meshIndex];
+		size_t rightSize = (size_t)((m_buffer.get() + m_vertex_count) - insertAddr);
 		Vertex* rightData = (Vertex*)malloc(rightSize);
 
 		if (rightData == NULL) {
@@ -110,7 +110,7 @@ namespace core {
 			meshMap[*it] = meshIndex++;
 		}
 
-		for (auto it = (++meshes.insert(meshes.begin() + meshIndex, insertAddr)); it != meshes.end(); ++it) {
+		for (auto it = (++meshes.insert(meshes.begin() + meshIndex, meshIndex)); it != meshes.end(); ++it) {
 			*it += vertexCount;
 		}
 
@@ -119,14 +119,25 @@ namespace core {
 	}
 
 
-	Vertex* DynamicVertexBuffer::GetMeshBuffer(EntityID key)
+	Vertex* DynamicVertexBuffer::GetMeshBuffer(EntityID key, int meshIndexOffset)
 	{
 		if (meshMap.find(key) == meshMap.end()) {
 			return nullptr;
 		}
 
+		return m_buffer.get() + meshes[meshMap[key] + meshIndexOffset];
+	}
+
+	unsigned int DynamicVertexBuffer::GetMeshVectorOffset(EntityID key)
+	{
 		return meshes[meshMap[key]];
 	}
+
+	Vertex* DynamicVertexBuffer::GetVertexBuffer()
+	{
+		return m_buffer.get();
+	}
+
 	void DynamicVertexBuffer::BindVBO()
 	{
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_VBO));
@@ -135,6 +146,6 @@ namespace core {
 
 	void DynamicVertexBuffer::glUpdateBuffer()
 	{
-		glBufferSubData(GL_ARRAY_BUFFER, 0, m_bufferSize * sizeof(Vertex), m_buffer.get());
+		glCall(glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertex_count * sizeof(Vertex), m_buffer.get()));
 	}
 }
