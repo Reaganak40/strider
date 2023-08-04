@@ -46,8 +46,9 @@ namespace core {
 			m_current_VAO = scene->m_VAO.GetID();
 		}
 
-		BatchBufferID possibleBBID = 0;
-		for (const auto& cru: scene->m_VAO.GetCRUs()) {
+		for (auto& layer : scene->m_layers) {
+			const CoreRenderUnit& cru = layer.GetCRU();
+
 			if (m_current_VBO != cru.vbo) {
 				BindVertexBuffer(cru.vbo);
 				m_current_VBO = cru.vbo;
@@ -58,7 +59,7 @@ namespace core {
 				m_current_IBO = cru.ibo;
 			}
 
-			scene->m_VAO.UpdateBatchBuffer(possibleBBID);
+			layer.UpdateBatchBuffer();
 
 			if (m_current_shader != cru.shader) {
 				BindShader(cru.shader);
@@ -66,6 +67,8 @@ namespace core {
 			}
 
 			glCall(glDrawElements(GL_TRIANGLES, cru.iboCount, GL_UNSIGNED_INT, 0));
+
+			layer.RenderGUI();
 		}
 
 	}

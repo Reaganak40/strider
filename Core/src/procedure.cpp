@@ -25,7 +25,7 @@ void UpdateFinal::OnUpdate(float deltaTime)
 	auto& batches = GetComponentPool<core::Vertex*>();
 	auto& transforms = GetComponentPool<TransformComponent>();
 
-	for (int i = 0; i < m_EMS->Count(); i++) {
+	for (unsigned int i = 0; i < m_EMS->Count(); i++) {
 
 		if (HasComponent(entityProfiles[i], TRANSFORM)) {
 

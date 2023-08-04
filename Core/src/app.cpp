@@ -1,5 +1,4 @@
 #include "core.h"
-
 #include "app.h"
 #include "scene.h"
 #include "error.h"
@@ -61,21 +60,21 @@ namespace core {
 		/* Render here */
 		m_renderer.Clear();
 
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		if (m_currentScene->sceneCallBack.GuiIsAttached) {
 
-		m_currentScene->Update(deltaTime);
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+		}
+
+		m_currentScene->scenePtr->Update(deltaTime);
 	}
 
 	void AppInstance::Render()
 	{
 		if (m_currentScene) {
-			m_renderer.Draw(m_currentScene);
+			m_renderer.Draw(m_currentScene->scenePtr);
 		}
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -86,17 +85,18 @@ namespace core {
 
 	std::shared_ptr<Scene> AppInstance::NewScene(SceneID name)
 	{
-		std::shared_ptr<Scene> nScene = std::make_shared<Scene>(m_renderer);
+		m_scenes[name] = { nullptr, { false } };
+		std::shared_ptr<Scene> nScene = std::make_shared<Scene>(m_renderer, m_scenes[name].sceneCallBack);
 		nScene->m_SceneID = name;
 		nScene->m_VAO.Bind();
 		nScene->AddLayer();
 
 		if (m_currentScene) {
-			m_currentScene->m_VAO.Bind();
+			m_currentScene->scenePtr->m_VAO.Bind();
 		}
 
-		m_scenes[name] = nScene;
-		return m_scenes[name];
+		m_scenes[name].scenePtr = nScene;
+		return nScene;
 	}
 	std::shared_ptr<Scene> AppInstance::SetScene(SceneID name)
 	{
@@ -104,10 +104,10 @@ namespace core {
 			NewScene(name);
 		}
 
-		m_currentScene = m_scenes[name];
-		m_scenes[name]->m_VAO.Bind();
+		m_currentScene = &m_scenes[name];
+		m_currentScene->scenePtr->m_VAO.Bind();
 		
-		return m_currentScene;
+		return m_currentScene->scenePtr;
 	}
 }
 

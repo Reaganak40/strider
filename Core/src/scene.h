@@ -7,6 +7,12 @@
 #include "procedure.h"
 #include "entityManagementSystem.h"
 
+#include "layer.h"
+#include "gui.h"
+
+namespace core {
+	
+}
 class Scene {
 	EntityID entityCounter;
 
@@ -16,10 +22,13 @@ class Scene {
 	core::VertexArray m_VAO;
 	SceneID m_SceneID;
 
-	std::vector<core::BatchBufferID> layers;
 	core::Renderer& m_renderer;
+	core::SceneCallback& m_SceneCallback;
+
+	std::vector<core::Layer> m_layers;
+	
 public:
-	Scene(core::Renderer& globalRenderer);
+	Scene(core::Renderer& globalRenderer, core::SceneCallback& callToInstance);
 	~Scene();
 
 	unsigned int AddLayer();
@@ -39,25 +48,19 @@ public:
 			2, 3, 0
 		};
 
-		m_VAO.GetBatchBuffer(layers[layer])->batchVBO.PushBack(eid, obj.vertices, 4);
-		m_VAO.GetBatchBuffer(layers[layer])->batchIBO.PushBack(eid, ib, 6, 4);
-		
-		if (m_VAO.GetBatchBuffer(layers[layer])->batchVBO.MeshCount() == 1) {
-			m_VAO.Bind();
-			m_VAO.GetBatchBuffer(layers[layer])->batchVBO.BindVBO();
-			m_VAO.GetBatchBuffer(layers[layer])->batchVBO.glUpdateBuffer();
-			m_VAO.DefineVertexBufferLayout(sizeof(core::Vertex));
-		}
+		m_layers[layer].AddMesh(eid, obj.vertices, 4, ib, 6);
 
 		m_EMS.PushNewEntity(
 			obj.m_Entity,
 			{ obj.position, obj.size },
 			{ obj.transform },
-			{ layer, m_VAO.GetBatchBuffer(layers[layer])->batchVBO.GetMeshVectorOffset(eid), 4 }
+			{ layer, m_layers[layer].GetMeshVectorOffset(eid), 4}
 		);
 		
 		return eid;
 	}
+
+	void AttachGUI(GuiTemplate* nGUI, int layer = -1);
 
 	void AddProcedure(Procedure* nProc);
 	void Update(float deltaTime);

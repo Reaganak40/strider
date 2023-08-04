@@ -6,16 +6,25 @@
 #include <memory>
 
 class Scene;
+
 namespace core {
+	struct SceneCallback {
+		bool GuiIsAttached;
+	};
 
 	class AppInstance {
 	private:
 		GLFWwindow* window;
 		int windowWidth, windowHeight;
 
-		std::unordered_map <SceneID, std::shared_ptr<Scene>> m_scenes;
+		struct SceneInstance {
+			std::shared_ptr<Scene> scenePtr;
+			SceneCallback sceneCallBack;
+		};
+
+		std::unordered_map <SceneID, SceneInstance> m_scenes;
 		
-		std::shared_ptr<Scene> m_currentScene;
+		SceneInstance* m_currentScene;
 
 	public:
 		Renderer m_renderer;

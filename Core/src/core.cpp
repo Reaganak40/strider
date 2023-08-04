@@ -23,7 +23,7 @@ int main(void)
     std::shared_ptr<Scene> scene = app.NewScene("Sandbox");
     app.SetScene("Sandbox");
 
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 150; i++) {
         Quad quad(
             { RandomFloat(0.0f, 1180.0f), RandomFloat(0.0f, 620.0f), 0.0f },
             { 100.0f, 100.0f, 0.0f },
@@ -35,6 +35,8 @@ int main(void)
     }
 
     scene->AddProcedure(new UpdateQuad);
+
+    scene->AttachGUI(new DiagnosticsGUI);
 
     while (app.IsOpen()) {
 

@@ -44,7 +44,8 @@ namespace core {
 		void Remove(EntityID key);
 
 		void BindIBO();
-		IndexBufferCount glUpdateBuffer();
+		bool glUpdateBuffer();
+		inline unsigned int IndexCount() { return m_indexBuffer.size(); }
 
 	};
 }

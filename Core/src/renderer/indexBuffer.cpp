@@ -127,14 +127,15 @@ namespace core {
 		glBindBuffer(GL_VERTEX_ARRAY, m_IBO);
 	}
 
-	IndexBufferCount DynamicIndexBuffer::glUpdateBuffer()
+	bool DynamicIndexBuffer::glUpdateBuffer()
 	{
 		if (m_shouldUpdate) {
 			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(IndexBuffer) * m_indexBuffer.size(), &m_indexBuffer[0]);
 			m_shouldUpdate = false;
+			return true;
 		}
 
-		return m_indexBuffer.size();
+		return false;
 	}
 }
 

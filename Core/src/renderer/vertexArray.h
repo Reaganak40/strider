@@ -55,6 +55,7 @@ namespace core {
 		void inline Unbind() { glBindVertexArray(0); }
 
 		inline const std::vector<CoreRenderUnit>& GetCRUs() { return CRUs; }
+		inline CoreRenderUnit& GetCRU(BatchBufferID bbID) { return CRUs[bbID]; }
 
 		VertexArrayID inline GetID() { return id; }
 
