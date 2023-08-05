@@ -1,64 +1,39 @@
 #pragma once
 
 #include "core.h"
-#include <renderer/renderer.h>
 #include "timestep.h"
 #include <memory>
 
-class Scene;
+#include "framework.h"
+#include "renderer.h"
+#include "scene.h"
+#include "messageManager.h"
+#include <unordered_map>
 
-namespace core {
-	struct SceneCallback {
-		bool GuiIsAttached;
-	};
-
-	class AppInstance {
-	private:
-		GLFWwindow* window;
-		int windowWidth, windowHeight;
-
-		struct SceneInstance {
-			std::shared_ptr<Scene> scenePtr;
-			SceneCallback sceneCallBack;
-		};
-
-		std::unordered_map <SceneID, SceneInstance> m_scenes;
-		
-		SceneInstance* m_currentScene;
-
-	public:
-		Renderer m_renderer;
-
-		AppInstance(const char* nWindowName, int nWindowWidth, int nWindowHeight);
-		~AppInstance();
-
-		inline bool IsOpen() { return !glfwWindowShouldClose(window); }
-
-		void Update(float deltaTime);
-		void Render();
-
-		std::shared_ptr<Scene> NewScene(SceneID name);
-		std::shared_ptr<Scene> SetScene(SceneID name);
-	};
-
-}
-
-class StriderEngine {
+class Application {
 private:
-	core::AppInstance* app;
 
-public:
+
+	Framework* m_framework;
+	
+	std::unordered_map<const char*, std::shared_ptr<Scene>> m_scenes;
+	std::shared_ptr<Renderer> m_renderer;
+
+	MessageManager* m_message_manager;
+	MessageResponse frameworkState;
+
+	std::shared_ptr<Scene> m_currentScene;
 	Timestep timestep;
-	StriderEngine();
-	~StriderEngine();
+public:
 
-	int CreateWindow(const char* windowName, int nWindowWidth, int nWindowHeight);
+	Application(const char* nWindowName, int nWindowWidth, int nWindowHeight);
+	~Application();
 
-	inline bool IsOpen() { return app->IsOpen(); }
+	inline bool IsOpen() { return m_framework->Platform()->IsOpen(); }
+
 	void Update();
-	inline void Render() { app->Render(); }
+	void Render();
 
-	inline std::shared_ptr<Scene> NewScene(SceneID name) { return app->NewScene(name); }
-	inline std::shared_ptr<Scene> SetScene(SceneID name) { return app->SetScene(name); }
-
+	std::shared_ptr<Scene> NewScene(const char* name);
+	std::shared_ptr<Scene> SetScene(const char* name);
 };

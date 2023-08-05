@@ -1,34 +1,26 @@
 #pragma once
 
 #include "quad.h"
-#include "app.h"
-
-#include <renderer/renderer.h>
+#include "messageManager.h"
+#include "framework.h"
 #include "procedure.h"
-#include "entityManagementSystem.h"
-
 #include "layer.h"
 #include "gui.h"
 
-namespace core {
-	
-}
 class Scene {
-	EntityID entityCounter;
-
-	EntityManagementSystem m_EMS;
-	std::vector<Procedure*> m_procedure_stack;
-
-	core::VertexArray m_VAO;
 	SceneID m_SceneID;
 
-	core::Renderer& m_renderer;
-	core::SceneCallback& m_SceneCallback;
+	std::vector<Procedure*> m_procedure_stack;
 
-	std::vector<core::Layer> m_layers;
+	std::vector<Layer*> m_layers;
+
+	Framework* m_framework;
+	MessageManager* m_message_manager;
+	EntityManager m_entities;
 	
+	static unsigned int SceneCounter;
 public:
-	Scene(core::Renderer& globalRenderer, core::SceneCallback& callToInstance);
+	Scene();
 	~Scene();
 
 	unsigned int AddLayer();
@@ -42,31 +34,21 @@ public:
 
 	template<>
 	EntityID AddToScene<Quad>(Quad& obj, unsigned int layer) {
-		EntityID eid = m_EMS.Count();
-		core::IndexBuffer ib[6] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-
-		m_layers[layer].AddMesh(eid, obj.vertices, 4, ib, 6);
-
-		m_EMS.PushNewEntity(
-			obj.m_Entity,
-			{ obj.position, obj.size },
-			{ obj.transform },
-			{ layer, m_layers[layer].GetMeshVectorOffset(eid), 4}
-		);
-		
-		return eid;
+		return AddEntity(&obj, layer);
 	}
 
 	void AttachGUI(GuiTemplate* nGUI, int layer = -1);
 
 	void AddProcedure(Procedure* nProc);
 	void Update(float deltaTime);
+	void Activate();
 
-	friend class core::Renderer;
-	friend class core::AppInstance;
+
+	SceneID inline GetID() { return m_SceneID; }
+
+private:
+	EntityID AddEntity(EntityTemplate* nEntity, unsigned int layer);
 };
+
 
 

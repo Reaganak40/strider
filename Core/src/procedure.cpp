@@ -22,7 +22,7 @@ void UpdateFinal::OnUpdate(float deltaTime)
 	auto& entityProfiles = GetComponentPool<EntityProfile>();
 	auto& dimensionalities = GetComponentPool<DimensionalComponent>();
 	auto& batchLocations = GetComponentPool<BatchBitMap>();
-	auto& batches = GetComponentPool<core::Vertex*>();
+	auto& batches = GetComponentPool<Vertex*>();
 	auto& transforms = GetComponentPool<TransformComponent>();
 
 	for (unsigned int i = 0; i < m_EMS->Count(); i++) {

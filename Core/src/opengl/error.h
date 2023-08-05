@@ -1,6 +1,6 @@
 #pragma once
+#include <iostream>
 #include <string>
-
 #define ASSERT(x) if (!(x)) __debugbreak();
 
 #define glCall(x) glClearError(); x; ASSERT(glLogError(#x, __FILE__, __LINE__))

@@ -1,10 +1,10 @@
 #pragma once
-#include "core.h"
+#include "opengl/glCore.h"
+#include "gui.h"
 #include "vertexBuffer.h"
 #include "indexBuffer.h"
 #include "shader.h"
 
-#include "error.h"
 #include <vector>
 
 #define VAO_MAX_RENDER_UNITS 64
@@ -22,7 +22,6 @@ namespace core {
 
 
 	typedef unsigned int VertexArrayID;
-	typedef unsigned int BatchBufferID;
 
 	struct BatchBuffer {
 		DynamicVertexBuffer batchVBO;
@@ -34,9 +33,10 @@ namespace core {
 
 		
 		VertexArrayID id;
+		
 		std::vector<CoreRenderUnit> CRUs;
-
-		std::unordered_map<BatchBufferID, std::shared_ptr<BatchBuffer>> m_BatchBuffers;
+		std::vector<std::shared_ptr<BatchBuffer>> m_BatchBuffers;
+		std::vector<GuiTemplate*> m_GUIs;
 
 		ShaderManager* m_shader_manager;
 
@@ -44,20 +44,19 @@ namespace core {
 		VertexArray(ShaderManager* nShaderManager = nullptr);
 		~VertexArray();
 
-		BatchBufferID NewBatchBuffer();
-		std::shared_ptr<BatchBuffer> GetBatchBuffer(BatchBufferID bbID);
-		void UpdateBatchBuffer(BatchBufferID bbID);
-		
-		void PushCRU_Data(void* vboData, size_t vertexSize, unsigned int vertexCount,
-			IndexBufferID ibo, IndexBufferCount iboCount, ShaderID shader);
+		void NewBatchBuffer(const LayerID& l_ID);
+		std::shared_ptr<BatchBuffer> GetBatchBuffer(const LayerID& l_ID);
+		void UpdateBatchBuffer(const LayerID& l_ID);
 
 		void inline Bind() { glCall(glBindVertexArray(id)); }
 		void inline Unbind() { glBindVertexArray(0); }
 
-		inline const std::vector<CoreRenderUnit>& GetCRUs() { return CRUs; }
-		inline CoreRenderUnit& GetCRU(BatchBufferID bbID) { return CRUs[bbID]; }
+		inline std::vector<CoreRenderUnit>& GetCRUs() { return CRUs; }
 
 		VertexArrayID inline GetID() { return id; }
+
+		void SetGUI(const LayerID& l_ID, GuiTemplate*& nGUI);
+		void RenderGUI(const LayerID& l_ID);
 
 		void DefineVertexBufferLayout(size_t vertexType);
 	private:

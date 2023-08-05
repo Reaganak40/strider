@@ -23,6 +23,11 @@ const std::string ReadFile(const std::string& filepath) {
     return fileBuffer;
 }
 
+void SetRandomSeed()
+{
+    srand((unsigned int)time(0));
+}
+
 float RandomFloat(float min, float max, unsigned int precision)
 {
     float val = min + ((max - min) * (std::rand() / (float)RAND_MAX));

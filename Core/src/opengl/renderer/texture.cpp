@@ -1,7 +1,8 @@
 #include <stb/stb_image.h>
 
 #include "core.h"
-#include "error.h"
+#include "opengl/glCore.h"
+#include "opengl/error.h"
 #include "texture.h"
 
 namespace core {

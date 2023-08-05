@@ -1,12 +1,12 @@
 #pragma once
 #include "core.h"
+#include "opengl/glCore.h"
 #include "entity.h"
 #include <vector>
 #include <unordered_map>
 
 namespace core {
 
-	typedef unsigned int IndexBuffer;
 	typedef unsigned int IndexBufferID;
 	typedef unsigned int IndexBufferCount;
 
@@ -36,6 +36,8 @@ namespace core {
 	public:
 		DynamicIndexBuffer(unsigned int nMaxIndices = DYNAMIC_BUFFER_DEFAULT_LIMIT);
 		~DynamicIndexBuffer();
+		DynamicIndexBuffer& operator= (DynamicIndexBuffer&&) = default;
+
 
 		IndexBufferID RegisterWithVAO();
 

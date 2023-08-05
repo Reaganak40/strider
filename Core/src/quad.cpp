@@ -1,55 +1,53 @@
 #include "quad.h"
-#include "entityManagementSystem.h"
 
 Quad::Quad(Strider::PositionVec3f nPosition, Strider::SizeVec3f nSize, Strider::ColorVec4f nColor)
-	: EntityTemplate(MESH | TRANSFORM | DIMENSIONALITY), transform{0.0f, 0.0f, 0.0f}
+	: EntityTemplate(MESH)
 {
-	position = nPosition;
-	size = nSize;
-	color = nColor;
+	m_mesh.vertices = vertices;
+	m_mesh.indices = indices;
 
-	vertices[0].position[0] = position.x;
-	vertices[0].position[1] = position.y;
-	vertices[0].position[2] = position.z;
-
-	vertices[1].position[0] = position.x + size.width;
-	vertices[1].position[1] = position.y;
-	vertices[1].position[2] = position.z;
-
-	vertices[2].position[0] = position.x + size.width;
-	vertices[2].position[1] = position.y + size.height;
-	vertices[2].position[2] = position.z;
-
-	vertices[3].position[0] = position.x;
-	vertices[3].position[1] = position.y + size.height;
-	vertices[3].position[2] = position.z;
+	m_mesh.vertices[0].position[0] = nPosition.x;
+	m_mesh.vertices[0].position[1] = nPosition.y;
+	m_mesh.vertices[0].position[2] = nPosition.z;
+									 
+	m_mesh.vertices[1].position[0] = nPosition.x + nSize.width;
+	m_mesh.vertices[1].position[1] = nPosition.y;
+	m_mesh.vertices[1].position[2] = nPosition.z;
+									 
+	m_mesh.vertices[2].position[0] = nPosition.x + nSize.width;
+	m_mesh.vertices[2].position[1] = nPosition.y + nSize.height;
+	m_mesh.vertices[2].position[2] = nPosition.z;
+									 
+	m_mesh.vertices[3].position[0] = nPosition.x;
+	m_mesh.vertices[3].position[1] = nPosition.y + nSize.height;
+	m_mesh.vertices[3].position[2] = nPosition.z;
 
 	for (int i = 0; i < 4; i++) {
-		vertices[i].colorRGBA[0] = color.red;
-		vertices[i].colorRGBA[1] = color.green;
-		vertices[i].colorRGBA[2] = color.blue;
-		vertices[i].colorRGBA[3] = color.alpha;
+		m_mesh.vertices[i].colorRGBA[0] = nColor.red;
+		m_mesh.vertices[i].colorRGBA[1] = nColor.green;
+		m_mesh.vertices[i].colorRGBA[2] = nColor.blue;
+		m_mesh.vertices[i].colorRGBA[3] = nColor.alpha;
 
-		vertices[i].texCoords[0] = 0.0f;
-		vertices[i].texCoords[1] = 0.0f;
-		vertices[i].texID = 0;
+		m_mesh.vertices[i].texCoords[0] = 0.0f;
+		m_mesh.vertices[i].texCoords[1] = 0.0f;
+		m_mesh.vertices[i].texID = 0;
 	}
+
+	m_mesh.indices[0] = 0;
+	m_mesh.indices[1] = 1;
+	m_mesh.indices[2] = 2;
+	m_mesh.indices[3] = 2;
+	m_mesh.indices[4] = 3;
+	m_mesh.indices[5] = 0;
+
+	m_mesh.vertexCount = 4;
+	m_mesh.indexCount = 6;
+
+	this->AddComponent<DimensionalComponent>({ nPosition, nSize });
 }
 
 Quad::~Quad()
 {
-}
-
-void Quad::Move(float dx, float dy, float dz)
-{
-	for (int i = 0; i < 4; i++) {
-		vertices[i].position[0] += dx;
-		vertices[i].position[1] += dy;
-		vertices[i].position[2] += dz;
-	}
-	position.x += dx;
-	position.y += dy;
-	position.z += dz;
 }
 
 UpdateQuad::UpdateQuad()

@@ -1,7 +1,7 @@
 #include <fstream>
 #include <string>
+#include "opengl/glCore.h"
 
-#include "error.h"
 #include "shader.h"
 
 namespace core {

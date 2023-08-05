@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "entityManagementSystem.h"
+#include "entityManager.h"
 
 class Procedure {
 public:
@@ -9,9 +9,9 @@ public:
 	~Procedure();
 	
 	virtual void OnUpdate(float deltaTime) { printf("Warning: Calling empty procedure!\n"); };
-	void inline AssignEMS(EntityManagementSystem* sceneEMS) { m_EMS = sceneEMS; }
+	void inline AssignEMS(EntityManager* sceneEMS) { m_EMS = sceneEMS; }
 protected:
-	EntityManagementSystem* m_EMS;
+	EntityManager* m_EMS;
 
 	template<typename Component>
 	std::vector<Component>& GetComponentPool() { return {}; }
@@ -25,7 +25,7 @@ protected:
 	template<>
 	std::vector<BatchBitMap>& GetComponentPool<BatchBitMap>() { return m_EMS->m_batch_bit_map; }
 	template<>
-	std::vector<core::Vertex*>& GetComponentPool<core::Vertex*>() { return m_EMS->m_batches; }
+	std::vector<Vertex*>& GetComponentPool<Vertex*>() { return m_EMS->m_batches; }
 };
 
 class UpdateFinal : public Procedure {

@@ -1,6 +1,5 @@
 #include "vertexArray.h"
-#include "error.h"
-#include "renderer.h"
+#include "rendererGL.h"
 
 #include "shader.h"
 #include "utils.h"
@@ -24,58 +23,57 @@ namespace core {
 			glDeleteBuffers(1, &(cru.ibo));
 			glDeleteProgram(cru.shader);
 		}
+
 		glDeleteVertexArrays(1, &id);
 	}
 
-	BatchBufferID VertexArray::NewBatchBuffer()
+	void VertexArray::NewBatchBuffer(const LayerID& l_ID)
 	{
 
 		if (CRUs.size() == VAO_MAX_RENDER_UNITS_REACHED) {
 			printf("Warning: VAO Buffer limit reached!\n");
-			return VAO_MAX_RENDER_UNITS_REACHED;
-		}
-
-		m_BatchBuffers[CRUs.size()] = std::make_shared<BatchBuffer>();
-
-		CRUs.push_back({});
-		CRUs.back().vbo = m_BatchBuffers[CRUs.size()-1]->batchVBO.RegisterWithVAO();
-		CRUs.back().ibo = m_BatchBuffers[CRUs.size()-1]->batchIBO.RegisterWithVAO();
-		CRUs.back().iboCount = 0;
-		CRUs.back().shader = m_shader_manager->GetShader("default")->GetID();
-
-		return m_BatchBuffers.size() - 1;
-	}
-
-	std::shared_ptr<BatchBuffer> VertexArray::GetBatchBuffer(BatchBufferID bbID)
-	{
-		return m_BatchBuffers[bbID];
-	}
-
-	void VertexArray::UpdateBatchBuffer(BatchBufferID bbID)
-	{
-		
-		if (m_BatchBuffers.find(bbID) != m_BatchBuffers.end()) {
-			m_BatchBuffers[bbID]->batchVBO.glUpdateBuffer();
-			CRUs[bbID].iboCount = m_BatchBuffers[bbID]->batchIBO.glUpdateBuffer();
-		}
-	}
-
-	void VertexArray::PushCRU_Data(void* vboData, size_t vertexSize, unsigned int vertexCount, IndexBufferID ibo, IndexBufferCount iboCount, ShaderID shader)
-	{
-		if (CRUs.size() == VAO_MAX_RENDER_UNITS_REACHED) {
-			std::cout << "Warning: Maximum Core rendering units reached!\n";
 			return;
 		}
 
-		CRUs.push_back({});
-		CRUs.back().vbo = RegisterVertexBuffer(vboData, vertexSize * vertexCount);
-		CRUs.back().ibo = ibo;
-		CRUs.back().iboCount = iboCount;
-		CRUs.back().shader = shader;
+		if (m_BatchBuffers.size() == l_ID) {
+			m_BatchBuffers.push_back(std::make_shared<BatchBuffer>());
+		}
+		else {
+			printf("Error: Insert functionality for batch layers not implemented!\n");
+			exit(1);
+		}
 
-		if (CRUs.size() == 1) {
-			// first VBO => define its layout
-			DefineVertexBufferLayout(vertexSize);
+		CRUs.push_back({});
+		CRUs.back().vbo = m_BatchBuffers.back()->batchVBO.RegisterWithVAO();
+		CRUs.back().ibo = m_BatchBuffers.back()->batchIBO.RegisterWithVAO();
+		CRUs.back().iboCount = 0;
+		CRUs.back().shader = m_shader_manager->GetShader("default")->GetID();
+
+		m_GUIs.push_back(nullptr);
+	}
+
+	std::shared_ptr<BatchBuffer> VertexArray::GetBatchBuffer(const LayerID& l_ID)
+	{
+		return m_BatchBuffers.at(l_ID);
+	}
+
+	void VertexArray::UpdateBatchBuffer(const LayerID& l_ID)
+	{
+		m_BatchBuffers.at(l_ID)->batchVBO.glUpdateBuffer();
+		if (m_BatchBuffers.at(l_ID)->batchIBO.glUpdateBuffer()) {
+			CRUs[l_ID].iboCount = m_BatchBuffers.at(l_ID)->batchIBO.IndexCount();
+		}
+	}
+
+	void VertexArray::SetGUI(const LayerID& l_ID, GuiTemplate*& nGUI)
+	{
+		m_GUIs[l_ID] = nGUI;
+	}
+
+	void VertexArray::RenderGUI(const LayerID& l_ID)
+	{
+		if (m_GUIs[l_ID]) {
+			m_GUIs[l_ID]->OnRender();
 		}
 	}
 
@@ -110,7 +108,7 @@ namespace core {
 			break;
 
 		default:
-			printf("Warning: Could not specifiy vertex buffer layout with vertexType: %d\n", vertexType);
+			printf("Warning: Could not specifiy vertex buffer layout with vertexType: %d\n", (unsigned int)vertexType);
 		}
 	}
 }

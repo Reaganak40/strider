@@ -1,6 +1,6 @@
 #include <sstream>
-
 #include "error.h"
+#include "glCore.h"
 #include "core.h"
 
 void glClearError() {
